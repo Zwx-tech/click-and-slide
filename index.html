@@ -16,6 +16,7 @@
           <button onclick="game.generate(4)">4x4</button>
           <button onclick="game.generate(5)">5x5</button>
           <button onclick="game.generate(6)">6x6</button>
+          <button onclick="game.generate(40)">40x40</button>
           <!-- <button onclick="game.generate(20)">20x20</button> -->
           <!-- <button onclick="game.toggleBlank()">red</button> -->
         </div>
@@ -63,7 +64,7 @@
         <div class="modal">
           <h1 class="modal__title">Wygrałeś</h1>
           <p class="modal__text">Twój czas to: {czas}</p>
-          <button class="modal__btn" onclick="">Zacznij od nowa &rarr;</button>
+          <button class="modal__btn" onclick="document.querySelector('.modal-container').classList.remove('visible')" >Zacznij od nowa &rarr;</button>
           <button
             class="link-2"
             onclick="document.querySelector('.modal-container').classList.remove('visible')"

@@ -57,11 +57,18 @@ class Slider {
         this.size = this.el.scrollWidth / (images + 1); // +1 cause of 'phantom image'
     }
     
+    slideWithOutAnimation(slide) {
+        this.el.setAttribute('style', 'scroll-behavior: unset;')
+        slide();
+        this.el.setAttribute('style', 'scroll-behavior: smooth;')
+    }
     nextImg() {
-        if(this.currentImg===images) {
-            this.el.scrollTo(0, 0);
+        console.log(this.currentImg);
+        if(this.currentImg===images-1) {
+            setTimeout(() => this.el.scrollTo(this.size * images, 0), 1000);
+            this.slideWithOutAnimation(() => this.el.scrollLeft = 0)
             this.currentImg = 0;
-            this.nextImg();
+            console.log(123);
             return;
         }
         this.el.scrollBy(this.size, 0);
@@ -95,9 +102,8 @@ class Game {
     currentImg = 0;
 
     nextImg() {
-        this.currentImg = (this.currentImg + 1) % images;
-        pf.setAttribute('style', `--img: url(img/${this.currentImg}.webp);`);
         this.slider.nextImg()
+        pf.setAttribute('style', `--img: url(img/${this.slider.currentImg}.webp);`);
     }
 
     prevImg() {
