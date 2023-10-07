@@ -53,8 +53,9 @@ function shuffleFormula(n) {
 class Slider {
     constructor(id) {
         this.el = document.querySelector(`#${id}`);
-        this.currentImg = 0;
+        this.currentImg = 1;
         this.size = this.el.scrollWidth / (images + 1); // +1 cause of 'phantom image'
+        this.el.scrollTo(this.size * 1, 0);
     }
     
     slideWithOutAnimation(slide) {
@@ -62,13 +63,13 @@ class Slider {
         slide();
         this.el.setAttribute('style', 'scroll-behavior: smooth;')
     }
+
     nextImg() {
         console.log(this.currentImg);
-        if(this.currentImg===images-1) {
-            setTimeout(() => this.el.scrollTo(this.size * images, 0), 1000);
+        if(this.currentImg===images) {
             this.slideWithOutAnimation(() => this.el.scrollLeft = 0)
-            this.currentImg = 0;
-            console.log(123);
+            setTimeout(() => this.el.scrollTo(this.size * 1, 0), 100);
+            this.currentImg = 1;
             return;
         }
         this.el.scrollBy(this.size, 0);
@@ -76,8 +77,12 @@ class Slider {
     }
     
     prevImg() {
-        if(this.currentImg==0)
+        if(this.currentImg==1) {
+            this.el.scrollBy(-this.size, 0)
+            setTimeout(() => this.slideWithOutAnimation(() => this.el.scrollLeft = this.size * (images + 1)), 170);
+            this.currentImg = images
             return;
+        }
         this.el.scrollBy(-this.size, 0);
         this.currentImg--;
     }
