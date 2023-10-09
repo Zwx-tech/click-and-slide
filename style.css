@@ -9,8 +9,10 @@
     --border-color: hsla(0, 0%, 100%, .2);
     --global-background: hsl(220, 25%, 10%);
     --background: linear-gradient(to right, hsl(210, 30%, 20%), hsl(255, 30%, 25%));
+    --background-2: linear-gradient(to right, hsla(210, 30%, 20%, .2), hsla(255, 30%, 25%, .2));
     --shadow-1: hsla(236, 50%, 50%, .3);
     --shadow-2: hsla(236, 50%, 50%, .4);
+    --shadow-3: hsla(236, 50%, 50%, .15);
 }   
 html {
     background: var(--global-background);
@@ -33,15 +35,25 @@ body {
     width: var(--size);
     aspect-ratio: 1 / 1;
     position: relative;
-    box-shadow: var(--shadow-2);
     overflow: hidden;
     border-radius: .5rem;
+}
+.game__wrapper > #pf::before {
+    /* box-shadow: 0 0 2.4rem .2rem var(--shadow-3); */
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    background: var(--background-2);
 }
 .button__wrapper {
     position: absolute;
     left: 0;
     top: 50%;
-    transform: translate(calc(-100% - 1rem), -50%);
+    transform: translate(calc(-100% - 2.5rem), -50%);
     flex-direction: column;
     display: flex;
     gap: .8rem;

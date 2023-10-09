@@ -47,7 +47,7 @@ function openModal(time) {
 // domain of f(n) being [2, inf)
 function shuffleFormula(n) {
     // console.log(20 + ((70 + n) * (n-2)))
-    return 20 + ((70 + n) * (n-2));
+    return 10 + ((5 + n) * (n-2));
 }
 
 class Slider {
@@ -108,12 +108,10 @@ class Game {
 
     nextImg() {
         this.slider.nextImg()
-        pf.setAttribute('style', `--img: url(img/${this.slider.currentImg}.webp);`);
     }
 
     prevImg() {
         this.currentImg = this.currentImg > 0 ? (this.currentImg - 1) % images : images - 1;
-        pf.setAttribute('style', `--img: url(img/${this.currentImg}.webp);`);
         this.slider.prevImg();
     }
 
@@ -235,6 +233,7 @@ class Game {
         // reset
         if(this.shuffleIntervalID) 
             window.clearInterval(this.shuffleIntervalID);
+        pf.setAttribute('style', `--img: url(img/${this.slider.currentImg-1}.webp);`);
         this.startingTime = Date.now();
         this.updateDisplay();
         this.pause = true;
