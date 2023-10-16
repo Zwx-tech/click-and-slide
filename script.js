@@ -56,6 +56,7 @@ class Slider {
         this.currentImg = 1;
         this.size = this.el.scrollWidth / (images + 1); // +1 cause of 'phantom image'
         this.el.scrollTo(this.size * 1, 0);
+        this.active = false;
     }
     
     slideWithOutAnimation(slide) {
@@ -65,26 +66,34 @@ class Slider {
     }
 
     nextImg() {
-        console.log(this.currentImg);
+        if (this.sliderActive) return;
+        this.active = true;
         if(this.currentImg===images) {
             this.slideWithOutAnimation(() => this.el.scrollLeft = 0)
             setTimeout(() => this.el.scrollTo(this.size * 1, 0), 100);
             this.currentImg = 1;
+            this.active = false;
+            console.log(123)
             return;
         }
         this.el.scrollBy(this.size, 0);
         this.currentImg++;
+        this.active = false;
+        console.log(123)
     }
     
     prevImg() {
+        this.active = true;
         if(this.currentImg==1) {
             this.el.scrollBy(-this.size, 0)
             setTimeout(() => this.slideWithOutAnimation(() => this.el.scrollLeft = this.size * (images + 1)), 170);
             this.currentImg = images
+            this.active = false;
             return;
         }
         this.el.scrollBy(-this.size, 0);
         this.currentImg--;
+        this.active = false;
     }
 }
 
@@ -93,6 +102,7 @@ class Game {
     pf = document.querySelector("#pf");
     // our slider object
     slider = new Slider("slider");
+    sliderActive = false;
     // game mechanics stuff
     prevPos = [-1, -1]; // default value is position that does not exist
     n;
@@ -106,17 +116,31 @@ class Game {
     scoreboard = []
     currentImg = 0;
 
-    nextImg() {
-        this.slider.nextImg()
+    async nextImg() {
+        document.querySelector("#next-btn").setAttribute('disabled', 'disabled');
+        document.querySelector("#prev-btn").setAttribute('disabled', 'disabled');
+        setTimeout(() => {
+            document.querySelector("#next-btn").removeAttribute('disabled');
+            document.querySelector("#prev-btn").removeAttribute('disabled');
+        }, 220);
+        await this.slider.nextImg();
+        console.log(456)
     }
-
+    
     prevImg() {
+        document.querySelector("#next-btn").setAttribute('disabled', 'disabled');
+        document.querySelector("#prev-btn").setAttribute('disabled', 'disabled');
+        setTimeout(() => {
+            document.querySelector("#next-btn").removeAttribute('disabled');
+            document.querySelector("#prev-btn").removeAttribute('disabled');
+        }, 220);
         this.currentImg = this.currentImg > 0 ? (this.currentImg - 1) % images : images - 1;
         this.slider.prevImg();
     }
 
     updateScoreboard(value) {
-        this.scoreboard.push(value);
+        const nickname = prompt("Podaj swój nick");
+        this.scoreboard.push(`${value} - ${nickname}`);
         this.scoreboard.sort();
         if(this.scoreboard.length < 10)
             return;
@@ -142,6 +166,7 @@ class Game {
             return;
         const dM = Date.now() - this.startingTime;
         const deltaTime = `${formantNum(parseInt(dM/ (1000 * 60 * 60)), 2)}${formantNum(parseInt(dM/ (1000 * 60)), 2)}${formantNum(parseInt(dM / 1000), 2)}${formantNum(dM % 1000, 3)}`;
+        console.log(deltaTime)
         document.querySelectorAll('.timer > .timer__num').forEach((el, i) => {
             el.setAttribute('style', `background-image: url('font/cyferki/c${deltaTime[i]}.gif');`)
         })
@@ -186,11 +211,13 @@ class Game {
     }
     
     shuffle(s) {
-        this.shuffleIntervalID = intervalLoop(() => this.randomSwap(), (200 - Math.min((this.n - 2) * 20, 200)), s, () => {
+        this.shuffleIntervalID = intervalLoop(() => this.randomSwap(), (200 - Math.min((this.n - 2) * 20, 200)), s, () => {});
+        // start timer
+        setTimeout(() => {
             this.startingTime = Date.now();
             this.displayIntervalID = setInterval(() => this.updateDisplay(), 1);
-            this.pause = false;
-        });
+        }, (200 - Math.min((this.n - 2) * 20, 200)) * s + 300);
+        this.pause = false;
         // in case shuffle ends up solving puzzle on its own   
         if(this.check) { 
             this.randomSwap();
@@ -233,6 +260,7 @@ class Game {
         // reset
         if(this.shuffleIntervalID) 
             window.clearInterval(this.shuffleIntervalID);
+        window.clearInterval(this.displayIntervalID);
         pf.setAttribute('style', `--img: url(img/${this.slider.currentImg-1}.webp);`);
         this.startingTime = Date.now();
         this.updateDisplay();

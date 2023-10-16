@@ -106,6 +106,9 @@ body {
     top: 50%;
     transform: translate(100%, -50%);
     height: var(--size);
+    background: var(--background-2);
+    padding: 0 6rem;
+    border-radius: .5rem;
 }
 .scoreboard > h2 {
     text-align: center;
